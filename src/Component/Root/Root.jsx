@@ -1,9 +1,20 @@
-import React from 'react'
+import React from "react";
+import Navbar from "./Navbar";
+import { Outlet } from "react-router-dom";
+import Footer from "../Footer/Footer";
 
 const Root = () => {
   return (
-    <div>Root</div>
-  )
-}
+    <div className="bg-col">
+      <Navbar></Navbar>
 
-export default Root
+      <div className="mx-auto max-w-7xl w-11/12 px-4  lg:px-8">
+        <Outlet></Outlet>
+      </div>
+
+      <Footer></Footer>
+    </div>
+  );
+};
+
+export default Root;

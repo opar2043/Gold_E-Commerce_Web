@@ -1,3 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+a.active hr{
+  display: block;
+  width: 36px;
+  background-color: #120E0E;
+}
+a.active {
+  color: #120E0E;
+  font-weight: 600;
+}
+
+.bg-col {
+  background-color: #FFF8ED;
+}
+
+.text-col {
+  color: #120E0E;
+}
+
+.text-gold {
+  color: #FB8911;
+}
+
+.bg-gold {
+  background-color: #FB8911;
+}
