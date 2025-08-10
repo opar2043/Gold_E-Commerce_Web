@@ -33,21 +33,19 @@ const Navbar = () => {
 
   return (
     <div>
-<div className="bg-[#110F0D] py-2 px-3 md:px-8 flex flex-col md:flex-row justify-between items-center text-white">
-  
-  <div className="flex items-center justify-start gap-3">
-    <img src={gold1} alt="Logo" className="w-6 md:w-8" />
-    <p  className="text-white text-2xl md:text-4xl font-extrabold tracking-wide">
-      Jeweluxe
-    </p>
-  </div>
+      <div className="bg-[#110F0D] py-3 px-4 md:px-8 flex flex-row justify-between items-center text-white">
+        <div className="flex items-center justify-start gap-3">
+          <img src={gold1} alt="Logo" className="w-6 md:w-8" />
+          <p className="text-white text-2xl md:text-4xl font-extrabold tracking-wide">
+            Jeweluxe
+          </p>
+        </div>
 
-  
-  <div className="mt-2 md:mt-0 text-center md:text-right  md:text-base">
-    <p className="text-xs">Monday - Friday</p>
-    <p className="text-xs">10:00 AM - 7:00 PM</p>
-  </div>
-</div>
+        <div className="mt-2 md:mt-0 text-center md:text-right  md:text-base">
+          <p className="text-xs">Monday - Friday</p>
+          <p className="text-xs">10:00 AM - 7:00 PM</p>
+        </div>
+      </div>
 
       <div className="navbar bg-[#FFF8ED]  md:px-10">
         {/* Left Side - Brand & Mobile Menu */}
