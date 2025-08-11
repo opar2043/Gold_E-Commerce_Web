@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import banner1 from '../../assets/banner1.jpg'
 import banner2 from '../../assets/banner2.jpg'
 import banner3 from '../../assets/banner3.jpg'
@@ -91,9 +92,12 @@ const Collection = () => {
 
         {/* Explore Collection Button */}
         <div className="flex justify-center mt-16">
-          <button className="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-semibold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 ease-in-out border-2 border-amber-600 hover:border-amber-700">
+          <Link 
+            to="/collection"
+            className="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-semibold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 ease-in-out border-2 border-amber-600 hover:border-amber-700"
+          >
             <span className="text-lg tracking-wide">Explore Collection</span>
-          </button>
+          </Link>
         </div>
       </div>
     </section>
