@@ -1,8 +1,8 @@
 import { FaFacebookF, FaTwitter, FaYoutube } from 'react-icons/fa';
 
-const Footer = () => {
+const About = () => {
   return (
-    <footer className="bg-gradient-to-r from-amber-800 to-amber-700 py-16">
+    <section className="bg-gradient-to-r from-amber-800 to-amber-700 py-16">
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           
@@ -76,8 +76,8 @@ const Footer = () => {
 
         </div>
       </div>
-    </footer>
+    </section>
   );
 };
 
-export default Footer;
+export default About;
