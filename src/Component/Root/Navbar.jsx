@@ -1,7 +1,10 @@
 import { Link, NavLink } from "react-router-dom";
 import { FiShoppingCart, FiUser, FiSearch, FiChevronUp, FiChevronDown } from "react-icons/fi";
+import { useCart } from "../../context/useCart";
 import gold1 from "../../assets/gold3.png";
 const Navbar = () => {
+  const { getCartItemCount } = useCart();
+  
   const links = (
     <>
       <NavLink to={"/"}>
@@ -151,12 +154,17 @@ const Navbar = () => {
 
         {/* Right Side - Cart */}
         <div className="navbar-end">
-          <button className="relative flex items-center gap-2 text-gray-700 font-semibold hover:text-[#FB8911] transition-colors duration-200">
+          <Link 
+            to="/cart"
+            className="relative flex items-center gap-2 text-gray-700 font-semibold hover:text-[#FB8911] transition-colors duration-200"
+          >
             <FiShoppingCart size={28} />
-            <span className="absolute -top-2 -right-3 bg-gold text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow">
-              10
-            </span>
-          </button>
+            {getCartItemCount() > 0 && (
+              <span className="absolute -top-2 -right-3 bg-gold text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow">
+                {getCartItemCount()}
+              </span>
+            )}
+          </Link>
         </div>
       </div>
     </div>
