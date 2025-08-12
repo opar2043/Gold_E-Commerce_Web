@@ -3,6 +3,7 @@ import banner1 from "../../assets/banner1.jpg";
 import banner2 from "../../assets/banner2.jpg";
 import banner3 from "../../assets/banner3.jpg";
 import banner4 from "../../assets/banner4.jpg";
+import { Link } from "react-router-dom";
 
 const Banner = () => {
   const bannerImages = [banner1, banner2, banner3, banner4];
@@ -26,11 +27,11 @@ const Banner = () => {
           <div className="md:col-span-2 max-w-lg text-left space-y-6">
             <h1 className="text-xl font-bold text-col md:text-4xl lg:text-6xl leading-tight">
               Welcome to
-              <strong className="text-[#FB8911]"> Yasini</strong>
+              <strong className="text-[#FB8911]"> Tannous Jewlery</strong>
             </h1>
 
             <p className="mt-4 text-col text-base md:text-lg leading-relaxed">
-              We offer 18k–24k gold jewelry, certified diamonds, colored stones,
+              We offer 18k–24k gold jewelry, certified golds, colored stones,
               and watches, with 21k and most pieces customizable to your desired
               design.
             </p>
@@ -51,7 +52,9 @@ const Banner = () => {
               <button
                 className="inline-block rounded-lg border-2 border-[#120E0E] px-6 py-3 font-semibold text-[#120E0E] shadow-lg transition-all duration-300 hover:bg-[#120E0E] hover:text-white transform hover:scale-105"
               >
+                <Link to={'/collection'}>
                 View Collection
+                </Link>
               </button>
             </div>
           </div>
@@ -77,7 +80,7 @@ const Banner = () => {
                     className={`w-3 h-3 rounded-full transition-all duration-300 ${
                       index === currentImageIndex 
                         ? 'bg-[#FB8911] shadow-lg' 
-                        : 'bg-white/50 hover:bg-white/75'
+                        : 'bg-[#FAF7F2]/50 hover:bg-[#FAF7F2]/75'
                     }`}
                   />
                 ))}

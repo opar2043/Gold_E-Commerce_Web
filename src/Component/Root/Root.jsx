@@ -2,6 +2,7 @@ import React from "react";
 import Navbar from "./Navbar";
 import { Outlet } from "react-router-dom";
 import Footer from "../Footer/Footer";
+import { FaWhatsapp } from "react-icons/fa";
 
 const Root = () => {
   return (
@@ -13,6 +14,15 @@ const Root = () => {
       </div>
 
       <Footer></Footer>
+            <div className="fixed bottom-10 right-8">
+        <button className="btn w-11 h-11 text-xs bg-green-500 hover:bg-[#FAF7F2] hover:text-green-400 hover:border-0 text-white rounded-full border border-green-500">
+          <div className="text-3xl">
+            <a href="https://api.whatsapp.com/send?phone=8801755555555&text=Hello%20there!" target="_blank" rel="noopener noreferrer">
+              <FaWhatsapp></FaWhatsapp>
+            </a>
+          </div>
+        </button>
+      </div>
     </div>
   );
 };

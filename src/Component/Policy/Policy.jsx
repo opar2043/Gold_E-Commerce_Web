@@ -36,8 +36,8 @@ const Policy = () => {
     {
       image: gold2,
       price: 149.99,
-      title: "Diamond Stud Earrings",
-      text: "Classic diamond stud earrings that add sparkle to your everyday look.",
+      title: "gold Stud Earrings",
+      text: "Classic gold stud earrings that add sparkle to your everyday look.",
     },
   ];
 
@@ -45,7 +45,7 @@ const Policy = () => {
     <div className="flex flex-col gap-5">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
         {policy.map((pol) => (
-          <div className="flex items-center gap-3 bg-[#F6F1E7] rounded-md p-3">
+          <div className="flex items-center gap-3 bg-[#FAF7F2] rounded-md p-3">
             <div className="text-gold">{pol.icon}</div>
             <div className="flex flex-col">
               <h2 className="text-col font-bold ">{pol.title}</h2>
@@ -59,7 +59,7 @@ const Policy = () => {
   {policy2.map((pol, i) => (
     <div
       key={i}
-      className="flex flex-col md:flex-row items-center gap-6 bg-[#F6F1E7] rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow duration-300"
+      className="flex flex-col md:flex-row items-center gap-6 bg-[#FAF7F2] rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow duration-300"
     >
       {/* Image */}
       <div className="md:w-1/2 w-full overflow-hidden rounded-lg">

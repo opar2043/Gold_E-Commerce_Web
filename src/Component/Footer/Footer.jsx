@@ -55,19 +55,19 @@ const Footer = () => {
             <div className="flex space-x-4">
               <a 
                 href="#" 
-                className="bg-white bg-opacity-20 hover:bg-opacity-30 p-3 rounded-full transition-all duration-300 hover:scale-110"
+                className="bg-[#FAF7F2] bg-opacity-20 hover:bg-opacity-30 p-3 rounded-full transition-all duration-300 hover:scale-110"
               >
                 <FaFacebookF className="text-white text-lg" />
               </a>
               <a 
                 href="#" 
-                className="bg-white bg-opacity-20 hover:bg-opacity-30 p-3 rounded-full transition-all duration-300 hover:scale-110"
+                className="bg-[#FAF7F2] bg-opacity-20 hover:bg-opacity-30 p-3 rounded-full transition-all duration-300 hover:scale-110"
               >
                 <FaTwitter className="text-white text-lg" />
               </a>
               <a 
                 href="#" 
-                className="bg-white bg-opacity-20 hover:bg-opacity-30 p-3 rounded-full transition-all duration-300 hover:scale-110"
+                className="bg-[#FAF7F2] bg-opacity-20 hover:bg-opacity-30 p-3 rounded-full transition-all duration-300 hover:scale-110"
               >
                 <FaYoutube className="text-white text-lg" />
               </a>
