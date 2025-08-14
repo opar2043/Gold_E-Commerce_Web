@@ -35,12 +35,13 @@ const Banner = () => {
   return (
     <section className="relative">
       <Carousel
-        autoPlay
+        
         infiniteLoop
         interval={2000}
         showStatus={false}
         showThumbs={false}
         showArrows={false}
+        autoPlay={true}
         swipeable
       >
         {slides.map((slide, index) => (

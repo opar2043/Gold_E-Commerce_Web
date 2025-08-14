@@ -17,6 +17,7 @@ import Checkout from './Component/Checkout/Checkout';
 import About from './Component/About/About';
 import Contact from './Component/Contact/Contact';
 
+
 const queryClient = new QueryClient()
 
 const router = createBrowserRouter([
