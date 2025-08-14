@@ -79,6 +79,8 @@ const BillingForm = ({ data, shippingData, onSubmit, onPrev }) => {
     'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
   ];
 
+  
+
   return (
     <div>
       <div className="mb-6">

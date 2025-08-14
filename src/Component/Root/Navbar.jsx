@@ -31,19 +31,13 @@ const Navbar = () => {
         </li>
         <hr className="md:border md:border-[#120e0ed8]  w-8 mx-auto hidden" />
       </NavLink>
-      <NavLink to={"/wishlist"}>
-        <li>
-          <a>Wishlist</a>
-        </li>
-        <hr className="md:border md:border-[#120e0ed8]  w-8 mx-auto hidden" />
-      </NavLink>
     </>
   );
 
   return (
     <div>
 {/* Upper Navbar - Black Background */}
-<div className="bg-[#110F0D] py-2 px-3 md:px-8 flex flex-col lg:flex-row justify-between items-center text-white">
+<div className="bg-[#110F0D] py-2 px-1 md:px-8 flex flex-col lg:flex-row justify-between items-center text-white">
   
   {/* Left Side - Logo and Website Name */}
   <div className="flex items-center justify-start gap-3">

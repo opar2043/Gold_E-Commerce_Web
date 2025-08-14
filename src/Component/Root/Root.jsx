@@ -6,10 +6,10 @@ import { FaWhatsapp } from "react-icons/fa";
 
 const Root = () => {
   return (
-    <div className="bg-col">
+  <div className="bg-col">
       <Navbar></Navbar>
 
-      <div className="mx-auto max-w-7xl w-11/12 px-4  lg:px-8">
+      <div className="mx-auto w-full  px-4  lg:px-8">
         <Outlet></Outlet>
       </div>
 

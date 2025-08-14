@@ -14,7 +14,6 @@ import ProductListing from './Component/ProductListing/ProductListing';
 import ProductDetails from './Component/ProductDetails/ProductDetails';
 import Cart from './Component/Cart/Cart';
 import Checkout from './Component/Checkout/Checkout';
-import Wishlist from './Component/Wishlist/Wishlist';
 import About from './Component/About/About';
 import Contact from './Component/Contact/Contact';
 
@@ -49,10 +48,6 @@ const router = createBrowserRouter([
       {
         path: '/cart',
         element: <Cart></Cart>
-      },
-      {
-        path: '/wishlist',
-        element: <Wishlist></Wishlist>
       },
       {
         path: '/about',

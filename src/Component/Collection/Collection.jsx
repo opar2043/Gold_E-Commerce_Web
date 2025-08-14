@@ -7,7 +7,7 @@ import banner4 from '../../assets/banner4.jpg'
 const Collection = () => {
   return (
     <section className="py-20 px-4">
-      <div className="max-w-7xl mx-auto">
+      <div className=" mx-auto">
         {/* Row 1: Title + Top Arched Images */}
         <div className="flex flex-col lg:flex-row items-center justify-center gap-8 mb-12">
           
