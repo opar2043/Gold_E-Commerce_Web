@@ -102,9 +102,11 @@ const Navbar = () => {
 
         {/* Right Side - User Profile */}
         <div className="mt-3 lg:mt-0">
-          <button className="p-2 rounded-full border border-gray-600 hover:border-[#FB8911] hover:text-[#FB8911] transition-colors duration-200">
-            <FiUser size={24} />
+    <Link to={'/login'}>
+               <button className="p-2 rounded-full border border-gray-600 hover:border-[#FB8911] hover:text-[#FB8911] transition-colors duration-200">
+            <FiUser size={24} /> 
           </button>
+    </Link>
         </div>
       </div>
 
