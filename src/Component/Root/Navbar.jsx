@@ -102,11 +102,11 @@ const Navbar = () => {
 
         {/* Right Side - User Profile */}
         <div className="mt-3 lg:mt-0">
-    <Link to={'/login'}>
-               <button className="p-2 rounded-full border border-gray-600 hover:border-[#FB8911] hover:text-[#FB8911] transition-colors duration-200">
-            <FiUser size={24} /> 
-          </button>
-    </Link>
+          <Link to={"/login"}>
+            <button className="p-2 rounded-full border border-gray-600 hover:border-[#FB8911] hover:text-[#FB8911] transition-colors duration-200">
+              <FiUser size={24} />
+            </button>
+          </Link>
         </div>
       </div>
 
@@ -155,7 +155,7 @@ const Navbar = () => {
           </div>
 
           {/* Search Bar */}
-          <div className="relative w-full max-w-[95%] sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-auto border">
+          <div className="relative w-full max-w-[95%] sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-auto ">
             <input
               type="text"
               placeholder="Search gold jewelry, rings, necklaces..."
