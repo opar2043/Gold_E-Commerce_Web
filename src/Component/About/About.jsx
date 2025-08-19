@@ -1,8 +1,9 @@
-import gold from '../../assets/gold.jpg';
+import { Link } from "react-router-dom";
+import gold from "../../assets/gold.jpg";
 
 const About = () => {
   return (
-    <section className="bg-[#FAF7F2] py-16 px-6 lg:px-20">
+    <section className="bg-col py-14 px-6 lg:px-20 md:my-10">
       <div className="max-w-6xl mx-auto">
         {/* Heading */}
         <h1 className="text-3xl md:text-5xl font-bold text-center text-[#120E0E] mb-8">
@@ -46,7 +47,9 @@ const About = () => {
               Why Choose Us?
             </h2>
             <ul className="list-disc list-inside text-gray-700 space-y-2">
-              <li>Certified 18k–24k gold jewelry with authenticity guarantee</li>
+              <li>
+                Certified 18k–24k gold jewelry with authenticity guarantee
+              </li>
               <li>Custom designs tailored to your personal style</li>
               <li>Luxury watches and rare gemstones available</li>
               <li>Expert guidance to help you choose the perfect piece</li>
@@ -55,17 +58,7 @@ const About = () => {
           </div>
         </div>
 
-        {/* Closing Statement */}
-        <div className="mt-12 text-center">
-          <p className="text-lg text-gray-700 max-w-3xl mx-auto">
-            Whether you’re celebrating a milestone, gifting a loved one, or
-            treating yourself, <strong>Tannous Jewelry</strong> is here to help
-            you make every moment unforgettable with timeless elegance.
-          </p>
-          <button className="mt-6 inline-block bg-[#FB8911] text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:bg-[#d8730f] transition-all duration-300">
-            Explore Our Collection
-          </button>
-        </div>
+
       </div>
     </section>
   );

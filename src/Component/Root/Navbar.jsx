@@ -1,4 +1,4 @@
-import { Link, NavLink } from "react-router-dom";
+import { NavLink} from "react-router-dom";
 import {
   FiShoppingCart,
   FiUser,
@@ -11,29 +11,31 @@ import gold1 from "../../assets/gold3.png";
 const Navbar = () => {
   const { getCartItemCount } = useCart();
 
-  const links = (
+  const NavLinks = (
     <>
       <NavLink to={"/"}>
         <li>
-          <a>Home</a>
+          <span>Home</span>
         </li>
         <hr className="md:border md:border-[#120e0ed8] w-8 mx-auto hidden" />
       </NavLink>
-      <NavLink to={"/collection"}>
+
+      <NavLink to={'/collection'} >
         <li>
-          <a>Collection</a>
+          <span>Collection</span>
         </li>
         <hr className="md:border md:border-[#120e0ed8] w-8 mx-auto hidden" />
       </NavLink>
+
       <NavLink to={"/about"}>
         <li>
-          <a>About</a>
+          <span>About</span>
         </li>
         <hr className="md:border md:border-[#120e0ed8]  w-8 mx-auto hidden" />
       </NavLink>
       <NavLink to={"/contact"}>
         <li>
-          <a>Contact</a>
+          <span>Contact</span>
         </li>
         <hr className="md:border md:border-[#120e0ed8]  w-8 mx-auto hidden" />
       </NavLink>
@@ -102,9 +104,11 @@ const Navbar = () => {
 
         {/* Right Side - User Profile */}
         <div className="mt-3 lg:mt-0">
-          <button className="p-2 rounded-full border border-gray-600 hover:border-[#FB8911] hover:text-[#FB8911] transition-colors duration-200">
-            <FiUser size={24} />
-          </button>
+          <NavLink to={"/login"}>
+            <button className="p-2 rounded-full border border-gray-600 hover:border-[#FB8911] hover:text-[#FB8911] transition-colors duration-200">
+              <FiUser size={24} />
+            </button>
+          </NavLink>
         </div>
       </div>
 
@@ -133,14 +137,14 @@ const Navbar = () => {
               tabIndex={0}
               className="menu menu-sm dropdown-content font-semibold w-52 p-2 bg-[#FAF7F2] rounded-lg z-10"
             >
-              {links}
+              {NavLinks}
             </ul>
           </div>
 
-          {/* Desktop Navigation Links */}
+          {/* Desktop Navigation NavLinks */}
           <div className="hidden lg:flex">
             <ul className="menu menu-horizontal font-semibold text-lg text-gray-700">
-              {links}
+              {NavLinks} 
             </ul>
           </div>
         </div>
@@ -153,7 +157,7 @@ const Navbar = () => {
           </div>
 
           {/* Search Bar */}
-          <div className="relative w-full max-w-[95%] sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-auto border">
+          <div className="relative w-full max-w-[95%] sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-auto ">
             <input
               type="text"
               placeholder="Search gold jewelry, rings, necklaces..."
@@ -168,7 +172,7 @@ const Navbar = () => {
 
         {/* Right Side - Cart */}
         <div className="navbar-end">
-          <Link
+          <NavLink
             to="/cart"
             className="relative flex items-center gap-2 text-gray-700 font-semibold hover:text-[#FB8911] transition-colors duration-200"
           >
@@ -178,7 +182,7 @@ const Navbar = () => {
                 {getCartItemCount()}
               </span>
             )}
-          </Link>
+          </NavLink>
         </div>
       </div>
     </div>

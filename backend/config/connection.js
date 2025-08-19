@@ -1,6 +1,6 @@
 // backend/config/connection.js
 import { createClient } from '@supabase/supabase-js';
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -15,3 +15,4 @@ try {
 }
 
 export default supabase;
+
