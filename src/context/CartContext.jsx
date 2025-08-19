@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useEffect } from 'react';
+import  { createContext, useReducer, useEffect } from 'react';
 import { CART_ACTIONS } from './cartActions';
 
 // Initial cart state
@@ -12,6 +12,7 @@ const initialState = {
   tax: 0,
   discount: 0
 };
+
 
 // Cart reducer
 const cartReducer = (state, action) => {

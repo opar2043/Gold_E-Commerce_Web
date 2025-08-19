@@ -2,7 +2,9 @@ import { Link } from "react-router-dom";
 import registerAnimation from "../../assets/register.json";
 import Lottie from "lottie-react";
 
+
 const Register = () => {
+  
     function handleRegister(e){
     e.preventDefault()
       const event = e.target;
@@ -10,8 +12,10 @@ const Register = () => {
       const name = event.name.value;
       const pass = event.pass.value;
       
+      
       console.log(email , pass , name);
   }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#faf6f2] px-4 py-10">
       <div className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-2 gap-0 bg-white rounded-xl shadow-2xl overflow-hidden border border-[#e5e0db]">
