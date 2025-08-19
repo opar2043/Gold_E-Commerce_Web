@@ -44,7 +44,7 @@ const Login = () => {
         console.error("Error during Google sign-in:");
         Swal.fire({
           title: "Login Failed",
-          text: 'Please try again later.',
+          text: 'try again later.',
           icon: "error",
         });
       });
