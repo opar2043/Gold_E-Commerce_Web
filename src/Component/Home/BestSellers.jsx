@@ -120,7 +120,7 @@ const BestSellers = () => {
           >
             {products.map((product) => (
               <SwiperSlide key={product.id}>
-                <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
+                <div className="bg-[#FAF7F2] rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
                   {/* Product Image with Icons */}
                   <div className="relative overflow-hidden">
                     <img 
@@ -138,13 +138,13 @@ const BestSellers = () => {
                     <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <button
                         onClick={() => addToCart(product)}
-                        className="bg-white p-2 rounded-full shadow-md hover:bg-amber-50 transition-colors"
+                        className="bg-[#FAF7F2] p-2 rounded-full shadow-md hover:bg-amber-50 transition-colors"
                       >
                         <FaShoppingCart className="text-amber-600" size={16} />
                       </button>
                       <button
                         onClick={() => toggleWishlist(product.id)}
-                        className={`bg-white p-2 rounded-full shadow-md transition-colors ${
+                        className={`bg-[#FAF7F2] p-2 rounded-full shadow-md transition-colors ${
                           wishlist.includes(product.id)
                             ? 'bg-red-50 text-red-500'
                             : 'hover:bg-red-50 text-gray-600 hover:text-red-500'
@@ -178,10 +178,10 @@ const BestSellers = () => {
           </Swiper>
 
           {/* Custom Navigation Buttons */}
-          <button className="swiper-button-prev-custom absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-shadow z-10">
+          <button className="swiper-button-prev-custom absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 bg-[#FAF7F2] rounded-full p-3 shadow-lg hover:shadow-xl transition-shadow z-10">
             <FaChevronLeft className="text-amber-600" size={16} />
           </button>
-          <button className="swiper-button-next-custom absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-shadow z-10">
+          <button className="swiper-button-next-custom absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 bg-[#FAF7F2] rounded-full p-3 shadow-lg hover:shadow-xl transition-shadow z-10">
             <FaChevronRight className="text-amber-600" size={16} />
           </button>
         </div>
