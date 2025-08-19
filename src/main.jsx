@@ -18,6 +18,7 @@ import Contact from './Component/Contact/Contact';
 import APITest from './Component/APITest/APITest';
 import Login from './Component/Authentication/Login';
 import Register from './Component/Authentication/Register';
+import Checkout from './Component/Checkout/Checkout';
 
 
 const queryClient = new QueryClient()
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
       {
         path: '/cart',
         element: <Cart></Cart>
+      },
+      {
+        path: '/checkout',
+        element: <Checkout></Checkout>
       },
       {
         path: '/about',

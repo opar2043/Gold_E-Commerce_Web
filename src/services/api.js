@@ -16,7 +16,7 @@ const api = axios.create({
 // Request interceptor for logging (optional)
 api.interceptors.request.use(
   (config) => {
-    console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`);
+    // API request logging removed for production
     return config;
   },
   (error) => {

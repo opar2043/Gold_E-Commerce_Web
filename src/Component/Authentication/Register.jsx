@@ -13,7 +13,7 @@ const Register = () => {
       const pass = event.pass.value;
       
       
-      console.log(email , pass , name);
+      // Registration data: email, pass, name
   }
 
   return (

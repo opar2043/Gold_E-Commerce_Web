@@ -20,7 +20,7 @@ const ProductCard = ({ product, viewMode }) => {
     e.preventDefault();
     e.stopPropagation();
     addToCart(product, 1, product.sizes?.[0] || '');
-    console.log('Added to cart:', product);
+    // Added to cart: product
   };
 
   const handleImageChange = (index) => {

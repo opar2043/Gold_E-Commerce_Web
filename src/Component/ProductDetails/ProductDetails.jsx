@@ -60,7 +60,7 @@ const ProductDetails = () => {
     try {
       await addToCart(product, quantity, selectedSize);
       alert(`${product.name} has been added to your cart!`);
-      console.log('Added to cart:', { product, quantity, selectedSize });
+      // Added to cart: { product, quantity, selectedSize }
     } catch (error) {
       console.error('Failed to add to cart:', error);
       alert('Failed to add item to cart. Please try again.');
@@ -69,7 +69,7 @@ const ProductDetails = () => {
 
   const handleWishlistToggle = () => {
     setIsWishlisted(!isWishlisted);
-    console.log('Wishlist toggled:', product.name);
+    // Wishlist toggled: product.name
   };
 
   const getRelatedProducts = () => {

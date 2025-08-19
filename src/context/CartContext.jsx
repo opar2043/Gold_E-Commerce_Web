@@ -1,4 +1,4 @@
-import  { createContext, useReducer, useEffect } from 'react';
+import React, { createContext, useReducer, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { cartAPI } from '../services/api';
 import { CART_ACTIONS } from './cartActions';
