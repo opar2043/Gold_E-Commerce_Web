@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getProductById, products as ALL_PRODUCTS } from '../../data/mockData';
+import { useQuery } from '@tanstack/react-query';
+import { productsAPI, dataHelpers } from '../../services/api';
 import { useCart } from '../../context/useCart';
-import { FiHeart, FiShoppingCart, FiStar, FiShield, FiTruck, FiRotateCcw, FiShare2, FiMinus, FiPlus } from 'react-icons/fi';
+import { FiHeart, FiShoppingCart, FiShare2, FiMinus, FiPlus } from 'react-icons/fi';
 import { FaHeart } from 'react-icons/fa';
 import ProductImageGallery from './ProductImageGallery';
 import ProductSpecifications from './ProductSpecifications';
@@ -15,26 +16,55 @@ const ProductDetails = () => {
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
-  const [activeTab, setActiveTab] = useState('description');
-  const [loading, setLoading] = useState(true);
 
+  // Predefined ring sizes for user selection
+  const ringSizes = ['6', '7', '8', '9', '10', '11', '12', '13', '14', '15'];
+
+  // Check if current product is a ring
+  const isRing = product && product.subcategory === 'rings';
+
+  // Fetch product from API
+  const { data: productResponse, isLoading: loading } = useQuery({
+    queryKey: ['product', id],
+    queryFn: () => productsAPI.getById(id),
+    enabled: !!id
+  });
+
+  // Transform and set product data
   useEffect(() => {
-    setLoading(true);
-    const productData = getProductById(id);
-    if (productData) {
-      setProduct(productData);
-      setSelectedSize(productData.sizes?.[0] || '');
+    if (productResponse?.data) {
+      const transformedProduct = dataHelpers.transformProduct(productResponse.data);
+      setProduct(transformedProduct);
+      
+      // For rings, set default size to first ring size, otherwise use database size
+      const isRing = transformedProduct.subcategory === 'rings';
+      if (isRing) {
+        setSelectedSize('6'); // Default ring size
+      } else {
+        setSelectedSize(transformedProduct.size || '');
+      }
     }
-    setLoading(false);
-  }, [id]);
+  }, [productResponse]);
 
   const handleQuantityChange = (change) => {
     setQuantity(prev => Math.max(1, prev + change));
   };
 
-  const handleAddToCart = () => {
-    addToCart(product, quantity, selectedSize);
-    console.log('Added to cart:', { product, quantity, selectedSize });
+  const handleAddToCart = async () => {
+    // Validate size selection for rings
+    if (isRing && !selectedSize) {
+      alert('Please select a size for this ring.');
+      return;
+    }
+    
+    try {
+      await addToCart(product, quantity, selectedSize);
+      alert(`${product.name} has been added to your cart!`);
+      console.log('Added to cart:', { product, quantity, selectedSize });
+    } catch (error) {
+      console.error('Failed to add to cart:', error);
+      alert('Failed to add item to cart. Please try again.');
+    }
   };
 
   const handleWishlistToggle = () => {
@@ -42,24 +72,10 @@ const ProductDetails = () => {
     console.log('Wishlist toggled:', product.name);
   };
 
-  const renderStars = (rating) => {
-    return [...Array(5)].map((_, index) => (
-      <FiStar
-        key={index}
-        className={`w-4 h-4 ${
-          index < Math.floor(rating) 
-            ? 'text-yellow-400 fill-current' 
-            : 'text-gray-300'
-        }`}
-      />
-    ));
-  };
-
   const getRelatedProducts = () => {
     if (!product) return [];
-    return ALL_PRODUCTS
-      .filter(p => p.id !== product.id && p.category === product.category)
-      .slice(0, 4);
+    // For now, return empty array. We'll implement this with a separate API call later
+    return [];
   };
 
   if (loading) {
@@ -114,30 +130,49 @@ const ProductDetails = () => {
           <div>
             <div className="sticky top-4">
               
-              {/* Product Title and Rating */}
+              {/* Product Title and Details */}
               <div className="mb-6">
-                <h1 className="text-3xl font-bold text-[#120E0E] mb-3">
+                <h1 className="text-3xl font-bold text-[#120E0E] mb-4">
                   {product.name}
                 </h1>
                 
-                <div className="flex items-center gap-4 mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center">
-                      {renderStars(product.rating)}
-                    </div>
+                {/* Product Details Grid */}
+                <div className="grid grid-cols-1 gap-3 mb-4 p-4 bg-gray-50 rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 font-medium">Item ID:</span>
+                    <span className="text-gray-800 font-semibold">{product.item_id}</span>
                   </div>
                   
-                  {product.certification && (
-                    <div className="flex items-center gap-1 text-green-600 text-sm">
-                      <FiShield size={16} />
-                      <span>{product.certification}</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 font-medium">Karat Type:</span>
+                    <span className="text-gray-800 font-semibold">{product.specifications?.metal || product.carat_type}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 font-medium">Weight:</span>
+                    <span className="text-gray-800 font-semibold">{product.specifications?.weight}</span>
+                  </div>
+                  
+                  {product.size && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 font-medium">Size:</span>
+                      <span className="text-gray-800 font-semibold">{product.size}</span>
                     </div>
                   )}
                 </div>
 
-                <p className="text-gray-600 text-lg leading-relaxed">
-                  {product.description}
-                </p>
+                {/* Description with specifications */}
+                <div className="text-gray-600 text-lg leading-relaxed">
+                  {product.description && (
+                    <p className="mb-4">{product.description}</p>
+                  )}
+                  <div className="text-sm text-gray-500">
+                    <p><strong>Specifications:</strong></p>
+                    <p>• Material: {product.carat_type} Gold</p>
+                    <p>• Weight: {product.specifications?.weight}</p>
+                    {product.size && <p>• Size: {product.size}</p>}
+                  </div>
+                </div>
               </div>
 
               {/* Price */}
@@ -146,33 +181,17 @@ const ProductDetails = () => {
                   <span className="text-3xl font-bold text-[#FB8911]">
                     ${product.price.toLocaleString()}
                   </span>
-                  {product.originalPrice > product.price && (
-                    <>
-                      <span className="text-xl text-gray-400 line-through">
-                        ${product.originalPrice.toLocaleString()}
-                      </span>
-                      <span className="bg-red-100 text-red-600 px-2 py-1 rounded text-sm font-semibold">
-                        Save ${(product.originalPrice - product.price).toLocaleString()}
-                      </span>
-                    </>
-                  )}
                 </div>
-                
-                {product.discount > 0 && (
-                  <div className="text-green-600 text-sm font-medium">
-                    {product.discount}% off - Limited time offer
-                  </div>
-                )}
               </div>
 
-              {/* Size Selection */}
-              {product.sizes && product.sizes.length > 0 && (
+              {/* Size Selection - Only for rings and products that need sizes */}
+              {(product.subcategory === 'rings' || (product.subcategory !== 'bangle-bracelets' && product.subcategory !== 'bangle-sets')) && (
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-800 mb-3">
                     Size: {selectedSize}
                   </label>
                   <div className="flex flex-wrap gap-2">
-                    {product.sizes.map((size) => (
+                    {(product.subcategory === 'rings' ? ringSizes : (product.sizes || [])).map((size) => (
                       <button
                         key={size}
                         onClick={() => setSelectedSize(size)}
@@ -259,52 +278,12 @@ const ProductDetails = () => {
                 )}
               </div>
 
-              {/* Trust Badges */}
-              <div className="border-t pt-6">
-                <div className="grid grid-cols-1 gap-3">
-                  <div className="flex items-center gap-3 text-sm text-gray-600">
-                    <FiTruck className="text-[#FB8911]" size={20} />
-                    <span>Free shipping on orders over $500</span>
-                  </div>
-                  <div className="flex items-center gap-3 text-sm text-gray-600">
-                    <FiRotateCcw className="text-[#FB8911]" size={20} />
-                    <span>30-day return policy</span>
-                  </div>
-                  <div className="flex items-center gap-3 text-sm text-gray-600">
-                    <FiShield className="text-[#FB8911]" size={20} />
-                    <span>Lifetime warranty on gold jewelry</span>
-                  </div>
-                </div>
-              </div>
+
             </div>
           </div>
         </div>
 
-        {/* Product Details Tabs */}
-        <div className="mb-16">
-          <div className="border-b border-gray-200 mb-8">
-            <nav className="flex space-x-8">
-              {[
-                { id: 'description', label: 'Description' },
-                { id: 'specifications', label: 'Specifications' },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
-                    activeTab === tab.id
-                      ? 'border-[#FB8911] text-[#FB8911]'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </nav>
-          </div>
 
-
-        </div>
 
         {/* Related Products */}
         <RelatedProducts products={getRelatedProducts()} />

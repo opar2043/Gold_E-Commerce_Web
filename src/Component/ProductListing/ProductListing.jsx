@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { categories, products as ALL_PRODUCTS, getProductsByCategory, getProductsBySubcategory } from '../../data/mockData';
+import { useQuery } from '@tanstack/react-query';
+import { categoriesAPI, productsAPI, dataHelpers } from '../../services/api';
 import CategoryTabs from './CategoryTabs';
 import FilterSidebar from './FilterSidebar';
 import ProductGrid from './ProductGrid';
@@ -20,34 +21,68 @@ const ProductListing = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState('featured');
   const [priceRange, setPriceRange] = useState([0, 20000]);
-  const [selectedMetal, setSelectedMetal] = useState('all');
-  const [selectedPurity, setSelectedPurity] = useState('all');
+  const [selectedKaratType, setSelectedKaratType] = useState('all');
   const [inStockOnly, setInStockOnly] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [availableKaratTypes, setAvailableKaratTypes] = useState([]);
+
+  // Fetch categories with subcategories from API
+  const { data: categoriesResponse } = useQuery({
+    queryKey: ['categories'],
+    queryFn: categoriesAPI.getAllWithSubcategories
+  });
+
+  const categories = categoriesResponse?.data || [];
+  const transformedCategories = dataHelpers.transformCategories(categories);
+
+  // Fetch products based on selection
+  const { data: productsResponse, isLoading: productsLoading } = useQuery({
+    queryKey: ['products', selectedCategory, selectedSubcategory],
+    queryFn: async () => {
+      if (selectedCategory === 'all') {
+        return await productsAPI.getAll();
+      } else if (selectedSubcategory === 'all') {
+        // Find the category name from the transformed categories
+        const categoryName = Object.values(transformedCategories)
+          .find(cat => cat.id === selectedCategory)?.name;
+        if (categoryName) {
+          return await productsAPI.getByCategory(categoryName);
+        }
+      } else {
+        // Find the subcategory name
+        const categoryObj = Object.values(transformedCategories)
+          .find(cat => cat.id === selectedCategory);
+        const subcategoryName = Object.values(categoryObj?.subcategories || {})
+          .find(sub => sub.id === selectedSubcategory)?.name;
+        if (subcategoryName) {
+          return await productsAPI.getBySubcategory(subcategoryName);
+        }
+      }
+      return await productsAPI.getAll();
+    }
+  });
+
+  // Transform API products and extract available karat types
+  useEffect(() => {
+    if (productsResponse?.data) {
+      const transformedProducts = dataHelpers.transformProducts(productsResponse.data);
+      setProducts(transformedProducts);
+      
+      // Extract unique karat types from products
+      const karatTypes = [...new Set(transformedProducts
+        .map(product => product.carat_type || product.specifications?.metal)
+        .filter(Boolean)
+      )];
+      setAvailableKaratTypes(karatTypes);
+    }
+    setLoading(productsLoading);
+  }, [productsResponse, productsLoading]);
 
   // Get current category data
-  const currentCategory = selectedCategory !== 'all' ? categories[selectedCategory] : null;
+  const currentCategory = selectedCategory !== 'all' ? transformedCategories[selectedCategory] : null;
   const currentSubcategory = currentCategory && selectedSubcategory !== 'all' 
     ? currentCategory.subcategories[selectedSubcategory] 
     : null;
-
-  // Load products based on selection
-  useEffect(() => {
-    setLoading(true);
-    let productData = [];
-    
-    if (selectedCategory === 'all') {
-      // Show all products from all categories
-      productData = ALL_PRODUCTS;
-    } else if (selectedSubcategory === 'all') {
-      productData = getProductsByCategory(selectedCategory);
-    } else {
-      productData = getProductsBySubcategory(selectedCategory, selectedSubcategory);
-    }
-    
-    setProducts(productData);
-    setLoading(false);
-  }, [selectedCategory, selectedSubcategory]);
 
   // Apply filters and sorting
   useEffect(() => {
@@ -58,17 +93,10 @@ const ProductListing = () => {
       product.price >= priceRange[0] && product.price <= priceRange[1]
     );
 
-    // Metal filter
-    if (selectedMetal !== 'all') {
+    // Karat type filter
+    if (selectedKaratType !== 'all') {
       filtered = filtered.filter(product => 
-        product.specifications?.metal?.toLowerCase().includes(selectedMetal.toLowerCase())
-      );
-    }
-
-    // Purity filter
-    if (selectedPurity !== 'all') {
-      filtered = filtered.filter(product => 
-        product.specifications?.metal?.includes(selectedPurity)
+        product.carat_type === selectedKaratType || product.specifications?.metal === selectedKaratType
       );
     }
 
@@ -100,7 +128,7 @@ const ProductListing = () => {
     }
 
     setFilteredProducts(filtered);
-  }, [products, priceRange, selectedMetal, selectedPurity, inStockOnly, sortBy]);
+  }, [products, priceRange, selectedKaratType, inStockOnly, sortBy]);
 
   // Handle category/subcategory changes
   const handleCategoryChange = (categoryId) => {
@@ -119,8 +147,7 @@ const ProductListing = () => {
   // Clear all filters
   const clearFilters = () => {
     setPriceRange([0, 20000]);
-    setSelectedMetal('all');
-    setSelectedPurity('all');
+    setSelectedKaratType('all');
     setInStockOnly(false);
     setSortBy('featured');
   };
@@ -179,7 +206,7 @@ const ProductListing = () => {
         <CategoryTabs 
           selectedCategory={selectedCategory}
           onCategoryChange={handleCategoryChange}
-          categories={categories}
+          categories={transformedCategories}
         />
 
         {/* Subcategory Tabs */}
@@ -219,10 +246,9 @@ const ProductListing = () => {
             <FilterSidebar
               priceRange={priceRange}
               setPriceRange={setPriceRange}
-              selectedMetal={selectedMetal}
-              setSelectedMetal={setSelectedMetal}
-              selectedPurity={selectedPurity}
-              setSelectedPurity={setSelectedPurity}
+              selectedKaratType={selectedKaratType}
+              setSelectedKaratType={setSelectedKaratType}
+              availableKaratTypes={availableKaratTypes}
               inStockOnly={inStockOnly}
               setInStockOnly={setInStockOnly}
               onClearFilters={clearFilters}

@@ -1,7 +1,6 @@
-import { getCategoriesList } from '../../data/mockData';
-
 const CategoryTabs = ({ selectedCategory, onCategoryChange, categories }) => {
-  const categoriesList = getCategoriesList();
+  // Categories now comes from API (transformed in parent component)
+  const categoriesList = Object.values(categories || {});
 
   return (
     <div className="mb-8">
@@ -40,7 +39,7 @@ const CategoryTabs = ({ selectedCategory, onCategoryChange, categories }) => {
           <div className="flex flex-col md:flex-row items-start gap-6">
             <div className="md:w-32 md:h-32 w-full h-48 rounded-lg overflow-hidden flex-shrink-0">
               <img 
-                src={categories[selectedCategory].image} 
+                src={categories[selectedCategory].image || '/placeholder-image.jpg'} 
                 alt={categories[selectedCategory].name}
                 className="w-full h-full object-cover"
               />

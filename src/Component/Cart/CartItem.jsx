@@ -8,24 +8,35 @@ const CartItem = ({ item }) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [showRemoveConfirm, setShowRemoveConfirm] = useState(false);
 
+  // Handle backend data structure where product is nested
+  const product = item.products || item;
+  const itemId = item.id;
+  const productId = product.id;
+
   const handleQuantityChange = async (newQuantity) => {
     if (newQuantity < 1) return;
     
     setIsUpdating(true);
-    // Simulate API call delay
-    setTimeout(() => {
-      updateQuantity(item.cartId, newQuantity);
+    try {
+      await updateQuantity(itemId, newQuantity);
+    } catch (error) {
+      console.error('Failed to update quantity:', error);
+    } finally {
       setIsUpdating(false);
-    }, 300);
+    }
   };
 
-  const handleRemove = () => {
-    removeFromCart(item.cartId);
-    setShowRemoveConfirm(false);
+  const handleRemove = async () => {
+    try {
+      await removeFromCart(itemId);
+      setShowRemoveConfirm(false);
+    } catch (error) {
+      console.error('Failed to remove item:', error);
+    }
   };
 
-  const itemTotal = item.price * item.quantity;
-  const savings = item.originalPrice > item.price ? (item.originalPrice - item.price) * item.quantity : 0;
+  const itemTotal = product.price * item.quantity;
+  const savings = product.originalPrice > product.price ? (product.originalPrice - product.price) * item.quantity : 0;
 
   return (
     <div className="p-6 relative">
@@ -39,10 +50,10 @@ const CartItem = ({ item }) => {
         
         {/* Product Image */}
         <div className="flex-shrink-0">
-          <Link to={`/product/${item.id}`} className="block">
+          <Link to={`/product/${productId}`} className="block">
             <img
-              src={item.mainImage}
-              alt={item.name}
+              src={product.mainImage || product.images?.[0] || '/placeholder-image.jpg'}
+              alt={product.name}
               className="w-24 h-24 md:w-32 md:h-32 object-cover rounded-lg border border-gray-200 hover:border-[#FB8911] transition-colors"
             />
           </Link>
@@ -54,20 +65,18 @@ const CartItem = ({ item }) => {
             
             {/* Product Info */}
             <div className="flex-1 min-w-0">
-              <Link 
-                to={`/product/${item.id}`}
+              <Link
+                to={`/product/${productId}`}
                 className="block hover:text-[#FB8911] transition-colors"
               >
                 <h3 className="font-semibold text-gray-800 text-lg mb-1 line-clamp-1">
-                  {item.name}
+                  {product.name}
                 </h3>
               </Link>
               
               <p className="text-sm text-gray-600 mb-2 line-clamp-2">
-                {item.description}
-              </p>
-
-              {/* Product Attributes */}
+                {product.description}
+              </p>              {/* Product Attributes */}
               <div className="flex flex-wrap gap-3 text-sm text-gray-500 mb-3">
                 {item.selectedSize && (
                   <span className="bg-gray-100 px-2 py-1 rounded">
@@ -145,10 +154,10 @@ const CartItem = ({ item }) => {
                   </span>
                 </div>
                 
-                {item.originalPrice > item.price && (
+                {product.originalPrice > product.price && (
                   <div className="text-sm text-gray-500">
                     <span className="line-through">
-                      ${(item.originalPrice * item.quantity).toLocaleString()}
+                      ${(product.originalPrice * item.quantity).toLocaleString()}
                     </span>
                     <span className="text-green-600 ml-2">
                       Save ${savings.toLocaleString()}
@@ -157,7 +166,7 @@ const CartItem = ({ item }) => {
                 )}
                 
                 <div className="text-sm text-gray-500 mt-1">
-                  ${item.price.toLocaleString()} each
+                  ${product.price.toLocaleString()} each
                 </div>
               </div>
 
@@ -227,7 +236,7 @@ const CartItem = ({ item }) => {
               Remove Item?
             </h3>
             <p className="text-gray-600 mb-6">
-              Are you sure you want to remove "{item.name}" from your cart?
+              Are you sure you want to remove "{product.name}" from your cart?
             </p>
             <div className="flex gap-3 justify-end">
               <button

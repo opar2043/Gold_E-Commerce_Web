@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/useCart';
-import { FiHeart, FiShoppingCart, FiStar, FiEye } from 'react-icons/fi';
+import { FiHeart, FiShoppingCart, FiEye } from 'react-icons/fi';
 import { FaHeart } from 'react-icons/fa';
 
 const ProductCard = ({ product, viewMode }) => {
@@ -27,19 +27,6 @@ const ProductCard = ({ product, viewMode }) => {
     setCurrentImageIndex(index);
   };
 
-  const renderStars = (rating) => {
-    return [...Array(5)].map((_, index) => (
-      <FiStar
-        key={index}
-        className={`w-3 h-3 ${
-          index < Math.floor(rating) 
-            ? 'text-yellow-400 fill-current' 
-            : 'text-gray-300'
-        }`}
-      />
-    ));
-  };
-
   if (viewMode === 'list') {
     return (
       <Link 
@@ -50,7 +37,7 @@ const ProductCard = ({ product, viewMode }) => {
           {/* Product Image */}
           <div className="relative w-24 h-24 md:w-32 md:h-32 flex-shrink-0">
             <img
-              src={product.mainImage}
+              src={product.images?.[0] || '/placeholder-image.jpg'}
               alt={product.name}
               className="w-full h-full object-cover rounded-lg"
             />
@@ -72,16 +59,6 @@ const ProductCard = ({ product, viewMode }) => {
                   {product.description}
                 </p>
                 
-                {/* Rating */}
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="flex items-center">
-                    {renderStars(product.rating)} 
-                  </div>
-                  <span className="text-xs text-white">
-                    ({product.reviews} reviews)  
-                  </span>
-                </div>
-
                 {/* Specifications */}
                 <div className="text-xs text-white mb-2">
                   {product.specifications?.metal && (
@@ -99,11 +76,6 @@ const ProductCard = ({ product, viewMode }) => {
                   <span className="text-lg font-bold text-[#FB8911]">
                     ${product.price.toLocaleString()}
                   </span>
-                  {product.originalPrice > product.price && (
-                    <span className="text-sm text-gray-400 line-through">
-                      ${product.originalPrice.toLocaleString()}
-                    </span>
-                  )}
                 </div>
 
                 {/* Action Buttons */}
@@ -153,19 +125,9 @@ const ProductCard = ({ product, viewMode }) => {
 
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-2">
-          {product.discount > 0 && (
-            <div className="bg-red-500 text-white px-2 py-1 rounded text-xs font-semibold">
-              -{product.discount}%  33333333333
-            </div>
-          )}
           {!product.inStock && (
             <div className="bg-gray-500 text-white px-2 py-1 rounded text-xs font-semibold">
               Out of Stock
-            </div>
-          )}
-          {product.certification && (
-            <div className="bg-green-500 text-white px-2 py-1 rounded text-xs font-semibold">
-              Certified
             </div>
           )}
         </div>
@@ -228,16 +190,6 @@ const ProductCard = ({ product, viewMode }) => {
           {product.description}
         </p>
 
-        {/* Rating */}
-        <div className="flex items-center gap-2 mb-2">
-          <div className="flex items-center">
-            {renderStars(product.rating)}
-          </div>
-          <span className="text-xs text-white">
-            ({product.reviews})
-          </span>
-        </div>
-
         {/* Specifications */}
         {product.specifications?.metal && (
           <div className="text-xs text-white mb-3">
@@ -252,11 +204,6 @@ const ProductCard = ({ product, viewMode }) => {
             <span className="text-lg font-bold text-[#FB8911]">
               ${product.price.toLocaleString()}
             </span>
-            {product.originalPrice > product.price && (
-              <span className="text-sm text-gray-400 line-through">
-                ${product.originalPrice.toLocaleString()}
-              </span>
-            )}
           </div>
           
           {product.inStock && (
