@@ -1,25 +1,58 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import loginanimation from "../../assets/login.json";
 import Lottie from "lottie-react";
 import { FaArrowRight, FaGoogle } from "react-icons/fa";
 import Swal from "sweetalert2";
-
+import useAuth from "../../context/useAuth";
 
 const Login = () => {
-  async function handleSubmit(e) {
+  const { logInUser, googleSignIn } = useAuth();
+  const navigate = useNavigate()
+  function handleSubmit(e) {
     e.preventDefault();
     const event = e.target;
     const email = event.email.value;
     const pass = event.pass.value;
 
-    
+    logInUser(email, pass)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log(user);
+        Swal.fire({ title: "Logged In", icon: "success" });
+        navigate('/')
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        console.error("Error during logging", errorMessage);
+        Swal.fire({
+          title: "Login Failed",
+          text: errorMessage,
+          icon: "error",
+        });
+      });
+  }
 
+  function handleGoogleSignIn() {
+    googleSignIn()
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+        Swal.fire({ title: "Logged In with Google", icon: "success" });
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        console.error("Error during Google sign-in:");
+        Swal.fire({
+          title: "Login Failed",
+          text: 'Please try again later.',
+          icon: "error",
+        });
+      });
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#faf6f2] px-4 py-10">
       <div className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-2 gap-0 bg-white rounded-xl shadow-2xl overflow-hidden border border-[#e5e0db]">
-        
         {/* Form Section */}
         <div className="p-10 flex flex-col justify-center relative">
           <div className="absolute top-0 right-0 w-20 h-20 border-t-2 border-r-2 border-[#FB8911]"></div>
@@ -83,7 +116,9 @@ const Login = () => {
           </div>
 
           <div className="flex justify-center space-x-6">
-            <button className="p-3 rounded-full border text-[#db4437] border-[#db4437] hover:bg-[#f5f5f5] transition-all duration-300">
+            <button
+              onClick={()=>handleGoogleSignIn()}
+              className="p-3 rounded-full border text-[#db4437] border-[#db4437] hover:bg-[#f5f5f5] transition-all duration-300">
               <FaGoogle />
             </button>
           </div>

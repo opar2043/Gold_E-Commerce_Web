@@ -17,6 +17,7 @@ import About from './Component/About/About';
 import Contact from './Component/Contact/Contact';
 import Login from './Component/Authentication/Login';
 import Register from './Component/Authentication/Register';
+import AuthProvider from './Component/Firebase/AuthProvider';
 
 
 const queryClient = new QueryClient()
@@ -75,9 +76,11 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
+    <AuthProvider>
       <CartProvider>
         <RouterProvider router={router} />
       </CartProvider>
+    </AuthProvider>
     </QueryClientProvider>
   </StrictMode>,
 )

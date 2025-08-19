@@ -1,4 +1,4 @@
-import { NavLink} from "react-router-dom";
+import { Navigate, NavLink, useNavigate } from "react-router-dom";
 import {
   FiShoppingCart,
   FiUser,
@@ -8,8 +8,13 @@ import {
 } from "react-icons/fi";
 import { useCart } from "../../context/useCart";
 import gold1 from "../../assets/gold3.png";
+import useAuth from "../../context/useAuth";
+import Swal from "sweetalert2";
+import { FaSignOutAlt } from "react-icons/fa";
 const Navbar = () => {
   const { getCartItemCount } = useCart();
+  const { logoutUser, user } = useAuth();
+  const naviagte = useNavigate();
 
   const NavLinks = (
     <>
@@ -20,7 +25,7 @@ const Navbar = () => {
         <hr className="md:border md:border-[#120e0ed8] w-8 mx-auto hidden" />
       </NavLink>
 
-      <NavLink to={'/collection'} >
+      <NavLink to={"/collection"}>
         <li>
           <span>Collection</span>
         </li>
@@ -41,6 +46,19 @@ const Navbar = () => {
       </NavLink>
     </>
   );
+
+  function handleLogout() {
+    logoutUser()
+      .then(() => {
+        console.log("Logged out successfully");
+        Swal.fire({ title: "Logging Out Successfully!", icon: "success" });
+        naviagte("/");
+      })
+      .catch((error) => {
+        console.error("Somethinh Happen Wrong:", error);
+        Swal.fire({ title: "Something went wrong", icon: "error" });
+      });
+  }
 
   return (
     <div>
@@ -103,13 +121,25 @@ const Navbar = () => {
         </div>
 
         {/* Right Side - User Profile */}
-        <div className="mt-3 lg:mt-0">
-          <NavLink to={"/login"}>
-            <button className="p-2 rounded-full border border-gray-600 hover:border-[#FB8911] hover:text-[#FB8911] transition-colors duration-200">
-              <FiUser size={24} />
+        {user ? (
+          <div>
+            <button
+              onClick={handleLogout}
+              className="flex items-center px-2 py-1 rounded-full border border-white hover:border-[#FB8911] hover:text-[#FB8911]  transition-colors duration-200  flex-col"
+            >
+              <FiUser size={20} />
+              <span className="text-[10px]">logout</span>
             </button>
-          </NavLink>
-        </div>
+          </div>
+        ) : (
+          <div className="mt-3 lg:mt-0">
+            <NavLink to={"/login"}>
+              <button className="p-2 rounded-full border border-white hover:border-[#FB8911] hover:text-[#FB8911] text-white transition-colors duration-200">
+                <FiUser size={24} />
+              </button>
+            </NavLink>
+          </div>
+        )}
       </div>
 
       {/* Lower Navbar - Navigation */}
@@ -144,7 +174,7 @@ const Navbar = () => {
           {/* Desktop Navigation NavLinks */}
           <div className="hidden lg:flex">
             <ul className="menu menu-horizontal font-semibold text-lg text-gray-700">
-              {NavLinks} 
+              {NavLinks}
             </ul>
           </div>
         </div>
