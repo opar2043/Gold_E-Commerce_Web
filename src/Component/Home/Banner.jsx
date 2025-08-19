@@ -47,13 +47,13 @@ const Banner = () => {
         {slides.map((slide, index) => (
           <div
             key={index}
-            className="relative  w-full h-[80vh] lg:h-screen flex items-center justify-center text-center"
+            className="relative  w-full h-[70vh]  flex items-center justify-center text-center"
           >
             {/* Background Image */}
             <img
               src={slide.img}
               alt={`Slide ${index + 1}`}
-              className="absolute inset-0 w-full h-full object-cover "
+              className="absolute inset-0 w-full h-full object-cover"
             />
 
             {/* Dark Overlay */}

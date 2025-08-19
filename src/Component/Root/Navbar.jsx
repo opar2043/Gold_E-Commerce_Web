@@ -15,25 +15,25 @@ const Navbar = () => {
     <>
       <NavLink to={"/"}>
         <li>
-          <a>Home</a>
+          <Link>Home</Link>
         </li>
         <hr className="md:border md:border-[#120e0ed8] w-8 mx-auto hidden" />
       </NavLink>
       <NavLink to={"/collection"}>
         <li>
-          <a>Collection</a>
+          <Link>Collection</Link>
         </li>
         <hr className="md:border md:border-[#120e0ed8] w-8 mx-auto hidden" />
       </NavLink>
       <NavLink to={"/about"}>
         <li>
-          <a>About</a>
+          <Link>About</Link>
         </li>
         <hr className="md:border md:border-[#120e0ed8]  w-8 mx-auto hidden" />
       </NavLink>
       <NavLink to={"/contact"}>
         <li>
-          <a>Contact</a>
+          <Link>Contact</Link>
         </li>
         <hr className="md:border md:border-[#120e0ed8]  w-8 mx-auto hidden" />
       </NavLink>
