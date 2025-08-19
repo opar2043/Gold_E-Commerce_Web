@@ -6,6 +6,7 @@ import {
   QueryClient,
   QueryClientProvider,  
 } from '@tanstack/react-query'
+
 import { CartProvider } from './context/CartContext';
 import Error from './Component/Error/Error';
 import Root from './Component/Root/Root';
@@ -15,9 +16,11 @@ import ProductDetails from './Component/ProductDetails/ProductDetails';
 import Cart from './Component/Cart/Cart';
 import About from './Component/About/About';
 import Contact from './Component/Contact/Contact';
+import APITest from './Component/APITest/APITest';
 import Login from './Component/Authentication/Login';
 import Register from './Component/Authentication/Register';
 import AuthProvider from './Component/Firebase/AuthProvider';
+import Checkout from './Component/Checkout/Checkout';
 
 
 const queryClient = new QueryClient()
@@ -53,12 +56,20 @@ const router = createBrowserRouter([
         element: <Cart></Cart>
       },
       {
+        path: '/checkout',
+        element: <Checkout></Checkout>
+      },
+      {
         path: '/about',
         element: <About></About>
       },
       {
         path: '/contact',
         element: <Contact></Contact>
+      },
+      {
+        path: '/api-test',
+        element: <APITest></APITest>
       },
       {
         path: '/login',

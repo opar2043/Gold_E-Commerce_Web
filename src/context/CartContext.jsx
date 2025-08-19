@@ -1,4 +1,6 @@
-import  { createContext, useReducer, useEffect } from 'react';
+import React, { createContext, useReducer, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { cartAPI } from '../services/api';
 import { CART_ACTIONS } from './cartActions';
 
 // Initial cart state
@@ -10,61 +12,36 @@ const initialState = {
   itemCount: 0,
   shipping: 0,
   tax: 0,
-  discount: 0
+  discount: 0,
+  loading: false,
+  error: null
 };
 
 
-// Cart reducer
+// Cart reducer - simplified for backend integration
 const cartReducer = (state, action) => {
   switch (action.type) {
-    case CART_ACTIONS.ADD_ITEM: {
-      const { product, quantity = 1, selectedSize } = action.payload;
-      const existingItemIndex = state.items.findIndex(
-        item => item.id === product.id && item.selectedSize === selectedSize
-      );
-
-      let newItems;
-      if (existingItemIndex >= 0) {
-        // Update existing item quantity
-        newItems = state.items.map((item, index) =>
-          index === existingItemIndex
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        );
-      } else {
-        // Add new item
-        const newItem = {
-          ...product,
-          cartId: `${product.id}-${selectedSize || 'default'}`,
-          quantity,
-          selectedSize,
-          addedAt: new Date().toISOString()
-        };
-        newItems = [...state.items, newItem];
-      }
-
-      return { ...state, items: newItems };
+    case CART_ACTIONS.SET_CART_DATA: {
+      const { items, totals, itemCount } = action.payload;
+      return {
+        ...state,
+        items: items || [],
+        total: totals?.total || 0,
+        subtotal: totals?.subtotal || 0,
+        shipping: totals?.shipping || 0,
+        tax: totals?.tax || 0,
+        itemCount: itemCount || 0,
+        loading: false,
+        error: null
+      };
     }
 
-    case CART_ACTIONS.REMOVE_ITEM: {
-      const newItems = state.items.filter(item => item.cartId !== action.payload.cartId);
-      return { ...state, items: newItems };
+    case CART_ACTIONS.SET_LOADING: {
+      return { ...state, loading: action.payload };
     }
 
-    case CART_ACTIONS.UPDATE_QUANTITY: {
-      const { cartId, quantity } = action.payload;
-      if (quantity <= 0) {
-        return cartReducer(state, { type: CART_ACTIONS.REMOVE_ITEM, payload: { cartId } });
-      }
-
-      const newItems = state.items.map(item =>
-        item.cartId === cartId ? { ...item, quantity } : item
-      );
-      return { ...state, items: newItems };
-    }
-
-    case CART_ACTIONS.CLEAR_CART: {
-      return { ...state, items: [] };
+    case CART_ACTIONS.SET_ERROR: {
+      return { ...state, error: action.payload, loading: false };
     }
 
     case CART_ACTIONS.TOGGLE_CART: {
@@ -80,29 +57,6 @@ const cartReducer = (state, action) => {
       };
     }
 
-    case CART_ACTIONS.CALCULATE_TOTALS: {
-      const subtotal = state.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      const itemCount = state.items.reduce((sum, item) => sum + item.quantity, 0);
-      
-      // Calculate shipping (free over $500)
-      const shipping = subtotal > 500 ? 0 : 25;
-      
-      // Calculate tax (8.5%)
-      const tax = subtotal * 0.085;
-      
-      // Calculate total
-      const total = subtotal + shipping + tax - state.discount;
-
-      return {
-        ...state,
-        subtotal,
-        total: Math.max(0, total),
-        itemCount,
-        shipping,
-        tax
-      };
-    }
-
     default:
       return state;
   }
@@ -114,53 +68,122 @@ const CartContext = createContext();
 // Cart provider component
 export const CartProvider = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, initialState);
+  const queryClient = useQueryClient();
 
-  // Load cart from localStorage on mount
-  useEffect(() => {
-    const savedCart = localStorage.getItem('yasini-cart');
-    if (savedCart) {
-      try {
-        const parsedCart = JSON.parse(savedCart);
-        parsedCart.items.forEach(item => {
-          dispatch({ 
-            type: CART_ACTIONS.ADD_ITEM, 
-            payload: { 
-              product: item, 
-              quantity: item.quantity, 
-              selectedSize: item.selectedSize 
-            } 
-          });
-        });
-      } catch (error) {
-        console.error('Error loading cart from localStorage:', error);
-      }
+  // Fetch cart data from backend
+  const { data: cartData, isLoading, error, refetch } = useQuery({
+    queryKey: ['cart'],
+    queryFn: cartAPI.getCart,
+    retry: 1,
+    refetchOnWindowFocus: false,
+    onError: (error) => {
+      console.error('Cart fetch error:', error);
+      dispatch({ type: CART_ACTIONS.SET_ERROR, payload: error.message });
     }
-  }, []);
+  });
 
-  // Save cart to localStorage whenever it changes
+  // Update state when cart data changes
   useEffect(() => {
-    localStorage.setItem('yasini-cart', JSON.stringify({ items: state.items }));
-    dispatch({ type: CART_ACTIONS.CALCULATE_TOTALS });
-  }, [state.items]);
+    if (cartData?.success && cartData?.data) {
+      dispatch({ 
+        type: CART_ACTIONS.SET_CART_DATA, 
+        payload: cartData.data 
+      });
+    }
+  }, [cartData]);
+
+  // Set loading state
+  useEffect(() => {
+    dispatch({ type: CART_ACTIONS.SET_LOADING, payload: isLoading });
+  }, [isLoading]);
+
+  // Add item to cart mutation
+  const addItemMutation = useMutation({
+    mutationFn: ({ productId, quantity, size }) => cartAPI.addItem(productId, quantity, size),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['cart']);
+    },
+    onError: (error) => {
+      console.error('Add to cart error:', error);
+      dispatch({ type: CART_ACTIONS.SET_ERROR, payload: error.message });
+    }
+  });
+
+  // Update item mutation
+  const updateItemMutation = useMutation({
+    mutationFn: ({ itemId, quantity, size }) => cartAPI.updateItem(itemId, quantity, size),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['cart']);
+    },
+    onError: (error) => {
+      console.error('Update cart item error:', error);
+      dispatch({ type: CART_ACTIONS.SET_ERROR, payload: error.message });
+    }
+  });
+
+  // Remove item mutation
+  const removeItemMutation = useMutation({
+    mutationFn: (itemId) => cartAPI.removeItem(itemId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['cart']);
+    },
+    onError: (error) => {
+      console.error('Remove cart item error:', error);
+      dispatch({ type: CART_ACTIONS.SET_ERROR, payload: error.message });
+    }
+  });
+
+  // Clear cart mutation
+  const clearCartMutation = useMutation({
+    mutationFn: () => cartAPI.clearCart(),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['cart']);
+    },
+    onError: (error) => {
+      console.error('Clear cart error:', error);
+      dispatch({ type: CART_ACTIONS.SET_ERROR, payload: error.message });
+    }
+  });
 
   // Cart actions
-  const addToCart = (product, quantity = 1, selectedSize = '') => {
-    dispatch({ 
-      type: CART_ACTIONS.ADD_ITEM, 
-      payload: { product, quantity, selectedSize } 
-    });
+  const addToCart = async (product, quantity = 1, selectedSize = '') => {
+    try {
+      await addItemMutation.mutateAsync({
+        productId: product.id,
+        quantity,
+        size: selectedSize
+      });
+    } catch (error) {
+      console.error('Add to cart failed:', error);
+      throw error;
+    }
   };
 
-  const removeFromCart = (cartId) => {
-    dispatch({ type: CART_ACTIONS.REMOVE_ITEM, payload: { cartId } });
+  const removeFromCart = async (itemId) => {
+    try {
+      await removeItemMutation.mutateAsync(itemId);
+    } catch (error) {
+      console.error('Remove from cart failed:', error);
+      throw error;
+    }
   };
 
-  const updateQuantity = (cartId, quantity) => {
-    dispatch({ type: CART_ACTIONS.UPDATE_QUANTITY, payload: { cartId, quantity } });
+  const updateQuantity = async (itemId, quantity) => {
+    try {
+      await updateItemMutation.mutateAsync({ itemId, quantity });
+    } catch (error) {
+      console.error('Update quantity failed:', error);
+      throw error;
+    }
   };
 
-  const clearCart = () => {
-    dispatch({ type: CART_ACTIONS.CLEAR_CART });
+  const clearCart = async () => {
+    try {
+      await clearCartMutation.mutateAsync();
+    } catch (error) {
+      console.error('Clear cart failed:', error);
+      throw error;
+    }
   };
 
   const toggleCart = () => {
@@ -172,7 +195,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const getCartItemCount = () => {
-    return state.items.reduce((sum, item) => sum + item.quantity, 0);
+    return state.itemCount;
   };
 
   const getCartTotal = () => {
@@ -181,13 +204,13 @@ export const CartProvider = ({ children }) => {
 
   const isItemInCart = (productId, selectedSize = '') => {
     return state.items.some(item => 
-      item.id === productId && item.selectedSize === selectedSize
+      item.products?.id === productId && item.size === selectedSize
     );
   };
 
   const getItemQuantity = (productId, selectedSize = '') => {
     const item = state.items.find(item => 
-      item.id === productId && item.selectedSize === selectedSize
+      item.products?.id === productId && item.size === selectedSize
     );
     return item ? item.quantity : 0;
   };
@@ -208,7 +231,12 @@ export const CartProvider = ({ children }) => {
     getCartItemCount,
     getCartTotal,
     isItemInCart,
-    getItemQuantity
+    getItemQuantity,
+    
+    // Additional state
+    loading: isLoading || addItemMutation.isPending || updateItemMutation.isPending || removeItemMutation.isPending || clearCartMutation.isPending,
+    error: error?.message || state.error,
+    refetchCart: refetch
   };
 
   return (

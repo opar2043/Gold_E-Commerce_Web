@@ -56,7 +56,7 @@ const BestSellers = () => {
 
   const addToCart = (product) => {
     // Add to cart functionality
-    console.log('Added to cart:', product);
+    // Added to cart: product
   };
 
   return (

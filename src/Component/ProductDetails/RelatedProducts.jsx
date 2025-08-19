@@ -22,7 +22,7 @@ const RelatedProducts = ({ products }) => {
   const handleAddToCart = (product, e) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Added to cart:', product);
+    // Added to cart: product
   };
 
   const renderStars = (rating) => {

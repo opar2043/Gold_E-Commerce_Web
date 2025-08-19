@@ -1,22 +1,29 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/useCart';
-import { FiTag, FiCreditCard, FiShield, FiTruck, FiPercent } from 'react-icons/fi';
+import { FiCreditCard, FiShield, FiTruck } from 'react-icons/fi';
+// import { FiTag, FiPercent } from 'react-icons/fi';
 
 const CartSummary = () => {
-  const { items, total, shipping, tax, discount, applyDiscount } = useCart();
-  const [promoCode, setPromoCode] = useState('');
-  const [promoError, setPromoError] = useState('');
-  const [promoSuccess, setPromoSuccess] = useState('');
-  const [isApplyingPromo, setIsApplyingPromo] = useState(false);
+  const { items, total, subtotal, shipping, tax } = useCart();
+  // const [promoCode, setPromoCode] = useState('');
+  // const [promoError, setPromoError] = useState('');
+  // const [promoSuccess, setPromoSuccess] = useState('');
+  // const [isApplyingPromo, setIsApplyingPromo] = useState(false);
 
-  const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const savings = items.reduce((sum, item) => {
-    const itemSavings = item.originalPrice > item.price ? 
-      (item.originalPrice - item.price) * item.quantity : 0;
-    return sum + itemSavings;
+  // Use subtotal from cart context if available, otherwise calculate from items
+  const displaySubtotal = subtotal || items.reduce((sum, item) => {
+    const price = item.products?.price || item.price || 0;
+    return sum + (price * item.quantity);
   }, 0);
 
+  // const savings = items.reduce((sum, item) => {
+  //   const itemSavings = item.originalPrice > item.price ? 
+  //     (item.originalPrice - item.price) * item.quantity : 0;
+  //   return sum + itemSavings;
+  // }, 0);
+
+  /*
   const handleApplyPromo = async () => {
     if (!promoCode.trim()) {
       setPromoError('Please enter a promo code');
@@ -62,6 +69,7 @@ const CartSummary = () => {
       setIsApplyingPromo(false);
     }, 1000);
   };
+  */
 
   const formatCurrency = (amount) => {
     return `$${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -78,7 +86,7 @@ const CartSummary = () => {
         </h2>
       </div>
 
-      {/* Promo Code */}
+      {/* Promo Code Section - Commented Out
       <div className="p-6 border-b border-gray-200">
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -117,7 +125,6 @@ const CartSummary = () => {
           )}
         </div>
 
-        {/* Popular Promo Codes */}
         <div className="space-y-2">
           <p className="text-xs text-gray-500 font-medium">Popular codes:</p>
           <div className="flex flex-wrap gap-2">
@@ -133,6 +140,7 @@ const CartSummary = () => {
           </div>
         </div>
       </div>
+      */}
 
       {/* Price Breakdown */}
       <div className="p-6 space-y-3">
@@ -140,16 +148,17 @@ const CartSummary = () => {
         {/* Subtotal */}
         <div className="flex justify-between items-center">
           <span className="text-gray-600">Subtotal ({items.length} items)</span>
-          <span className="font-medium">{formatCurrency(subtotal)}</span>
+          <span className="font-medium">{formatCurrency(displaySubtotal)}</span>
         </div>
 
-        {/* Savings */}
+        {/* Savings - Commented Out
         {savings > 0 && (
           <div className="flex justify-between items-center text-green-600">
             <span>Item Savings</span>
             <span>-{formatCurrency(savings)}</span>
           </div>
         )}
+        */}
 
         {/* Shipping */}
         <div className="flex justify-between items-center">
@@ -165,11 +174,11 @@ const CartSummary = () => {
         {/* Free Shipping Progress */}
         {shipping > 0 && (
           <div className="text-xs text-gray-500">
-            <p>Add {formatCurrency(500 - subtotal)} more for free shipping</p>
+            <p>Add {formatCurrency(500 - displaySubtotal)} more for free shipping</p>
             <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
               <div 
                 className="bg-[#FB8911] h-1.5 rounded-full transition-all duration-300"
-                style={{ width: `${Math.min((subtotal / 500) * 100, 100)}%` }}
+                style={{ width: `${Math.min((displaySubtotal / 500) * 100, 100)}%` }}
               ></div>
             </div>
           </div>
@@ -181,7 +190,7 @@ const CartSummary = () => {
           <span className="font-medium">{formatCurrency(tax)}</span>
         </div>
 
-        {/* Discount */}
+        {/* Discount - Commented Out
         {discount > 0 && (
           <div className="flex justify-between items-center text-green-600">
             <span className="flex items-center gap-1">
@@ -191,22 +200,24 @@ const CartSummary = () => {
             <span>-{formatCurrency(discount)}</span>
           </div>
         )}
+        */}
 
         {/* Divider */}
         <div className="border-t border-gray-200 my-4"></div>
 
         {/* Total */}
         <div className="flex justify-between items-center text-lg font-bold">
-          <span className="text-gray-800">Total</span>
+          <span className="text-gray-800">Grand Total</span>
           <span className="text-[#FB8911]">{formatCurrency(total)}</span>
         </div>
 
-        {/* Total Savings */}
+        {/* Total Savings - Commented Out
         {(savings + discount) > 0 && (
           <div className="text-center text-sm text-green-600 font-medium">
             You saved {formatCurrency(savings + discount)}!
           </div>
         )}
+        */}
       </div>
 
       {/* Actions */}
@@ -236,7 +247,7 @@ const CartSummary = () => {
         </div>
       </div>
 
-      {/* Payment Methods */}
+      {/* Payment Methods - Commented Out
       <div className="p-6 border-t border-gray-200">
         <p className="text-sm text-gray-600 mb-3">Accepted Payment Methods:</p>
         <div className="flex justify-center gap-2">
@@ -254,6 +265,7 @@ const CartSummary = () => {
           </div>
         </div>
       </div>
+      */}
     </div>
   );
 };

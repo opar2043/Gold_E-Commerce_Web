@@ -4,18 +4,16 @@ import { FiChevronDown, FiChevronUp, FiX } from 'react-icons/fi';
 const FilterSidebar = ({
   priceRange,
   setPriceRange,
-  selectedMetal,
-  setSelectedMetal,
-  selectedPurity,
-  setSelectedPurity,
+  selectedKaratType,
+  setSelectedKaratType,
   inStockOnly,
   setInStockOnly,
-  onClearFilters
+  onClearFilters,
+  availableKaratTypes = [] // This will come from the products fetched
 }) => {
   const [expandedSections, setExpandedSections] = useState({
     price: true,
-    metal: true,
-    purity: true,
+    karat: true,
     availability: true
   });
 
@@ -26,20 +24,13 @@ const FilterSidebar = ({
     }));
   };
 
-  const metalTypes = [
-    { value: 'all', label: 'All Metals' },
-    { value: 'gold', label: 'Gold' },
-    { value: 'white gold', label: 'White Gold' },
-    { value: 'silver', label: 'Silver' },
-    { value: 'platinum', label: 'Platinum' }
-  ];
-
-  const purityLevels = [
-    { value: 'all', label: 'All Purities' },
-    { value: '14k', label: '14k' },
-    { value: '18k', label: '18k' },
-    { value: '22k', label: '22k' },
-    { value: '24k', label: '24k' }
+  // Generate karat types from available products
+  const karatTypes = [
+    { value: 'all', label: 'All Karat Types' },
+    ...availableKaratTypes.map(karat => ({
+      value: karat,
+      label: karat
+    }))
   ];
 
   const handlePriceChange = (index, value) => {
@@ -130,47 +121,24 @@ const FilterSidebar = ({
         </div>
       </FilterSection>
 
-      {/* Metal Type */}
+      {/* Karat Type */}
       <FilterSection
-        title="Metal Type"
-        isExpanded={expandedSections.metal}
-        onToggle={() => toggleSection('metal')}
+        title="Karat Type"
+        isExpanded={expandedSections.karat}
+        onToggle={() => toggleSection('karat')}
       >
         <div className="space-y-2">
-          {metalTypes.map((metal) => (
-            <label key={metal.value} className="flex items-center cursor-pointer">
+          {karatTypes.map((karat) => (
+            <label key={karat.value} className="flex items-center cursor-pointer">
               <input
                 type="radio"
-                name="metal"
-                value={metal.value}
-                checked={selectedMetal === metal.value}
-                onChange={(e) => setSelectedMetal(e.target.value)}
+                name="karat"
+                value={karat.value}
+                checked={selectedKaratType === karat.value}
+                onChange={(e) => setSelectedKaratType(e.target.value)}
                 className="mr-3 text-[#FB8911] focus:ring-[#FB8911]"
               />
-              <span className="text-sm text-gray-700">{metal.label}</span>
-            </label>
-          ))}
-        </div>
-      </FilterSection>
-
-      {/* Purity Level */}
-      <FilterSection
-        title="Gold Purity"
-        isExpanded={expandedSections.purity}
-        onToggle={() => toggleSection('purity')}
-      >
-        <div className="space-y-2">
-          {purityLevels.map((purity) => (
-            <label key={purity.value} className="flex items-center cursor-pointer">
-              <input
-                type="radio"
-                name="purity"
-                value={purity.value}
-                checked={selectedPurity === purity.value}
-                onChange={(e) => setSelectedPurity(e.target.value)}
-                className="mr-3 text-[#FB8911] focus:ring-[#FB8911]"
-              />
-              <span className="text-sm text-gray-700">{purity.label}</span>
+              <span className="text-sm text-gray-700">{karat.label}</span>
             </label>
           ))}
         </div>
@@ -194,39 +162,6 @@ const FilterSidebar = ({
           </label>
         </div>
       </FilterSection>
-
-      {/* Quick Filters */}
-      <div className="mt-6 pt-4 border-t border-gray-200">
-        <h4 className="font-medium text-gray-800 mb-3">Quick Filters</h4>
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => {
-              setPriceRange([0, 1000]);
-              setSelectedMetal('all');
-            }}
-            className="px-3 py-1 text-xs bg-gray-100 hover:bg-[#FB8911] hover:text-white rounded-full transition-colors"
-          >
-            Under $1,000
-          </button>
-          <button
-            onClick={() => {
-              setSelectedMetal('gold');
-              setSelectedPurity('22k');
-            }}
-            className="px-3 py-1 text-xs bg-gray-100 hover:bg-[#FB8911] hover:text-white rounded-full transition-colors"
-          >
-            22k Gold
-          </button>
-          <button
-            onClick={() => {
-              setPriceRange([5000, 20000]);
-            }}
-            className="px-3 py-1 text-xs bg-gray-100 hover:bg-[#FB8911] hover:text-white rounded-full transition-colors"
-          >
-            Luxury Items
-          </button>
-        </div>
-      </div>
 
       <style jsx>{`
         .slider::-webkit-slider-thumb {
